@@ -2,8 +2,44 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title></title>
+		<title>mod开发文档</title>
 	</head>
 	<body>
+		<h2>本游戏目前只有jar版本，后续可能会加入HTML5版本</h2>
+		<p>mod开发分为jar版mod和存档数据包</p>
+		<ul>
+			<h2><li>jar版</li></h2>
+			<ul>
+				<li>使用JDK11编译，或使用mod制作器</li>
+				<li>mod调用的主方法必须是无参无返回的</li>
+				<li>类似regdit()的方法是对mod的支持，这代表你需要java面向对象</li>
+				<li>例如你要注册一个物品，你需要继承Item类，这一系列的机制用到了Java多态</li>
+				<li>然后把你注册的类的对象传入对应方法的参数</li>
+				<li>方块、实体不知道<a href="https://space.bilibili.com/157262276/">来自四次元的雪莉</a>有没有写对应的支持</a></li>
+				<li>如果有，会加入对应的API文档</li>
+				<li>接下来我们看看mod的载入方法</li>
+				<ul>
+					<li>你需要在jar根目录下建一个文件：options.txt，然后在里面写一些东西</li>
+					<li>一个mod必须写这些参数：type:、main-class:</li>
+					<li>如果没有main-method参数，则main-class参数指向的类必须继承modTemplate类</li>
+					<li>忽略空行和开头、结尾的空格</li>
+				</ul>
+			</ul>
+			<h2><li>存档数据包</li></h2>
+			<ul>
+				<li>使用JDK11编译</li>
+				<li>使用io.github.javaherobrine.ModClassLoader加载</li>
+				<li>因为在运行时无法配置classpath参数</li>
+				<li>也可以自己写一个自定义ClassLoader</li>
+				<li>自定义ClassLoader要用defineClass来加载</li>
+				<li>需要options.txt</li>
+				<li>和jar版mod一样，但是需要新的参数：packid:，用来标识mod文件夹</li>
+				<li>编写方法和jar版mod大同小异</li>
+			</ul>
+			<li><h2>材质包、光影</h2></li>
+			<ul>
+				<li>目前没有引擎代码，所以敬请期待</li>
+			</ul>
+		</ul>
 	</body>
 </html>

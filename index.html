@@ -5,10 +5,24 @@
 		<title></title>
 	</head>
 	<body>
-		<h2>Choose your language</h2>
-		<h2>选择你的语言</h2>
-		<ul>
-			<li><button onclick='window.location.href="https://javaherobrine.github.io/zh-cn'>中文</button></li>
-		</ul>
+		<script src="javascript/cookie.js"></script>
+		<script>
+			var v=readLanguage();
+			if(v==undefined){
+				window.location.href="choose.html";
+			}else{
+				switch(v){
+					case "zh-cn":
+						window.location.href="zh-cn/";
+						break;
+					case "":
+						window.location.href="en-us/";
+						break;
+					default:
+						window.location.href="choose.html";
+						break;
+				}
+			}
+		</script>
 	</body>
 </html>
