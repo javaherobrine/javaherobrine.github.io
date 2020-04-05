@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>mod开发文档</title>
+		<title>mod开发教程（这不是Java教程）</title>
 	</head>
 	<body>
 		<h2>本游戏目前只有jar版本，后续可能会加入HTML5版本</h2>
@@ -41,5 +41,30 @@
 				<li>目前没有引擎代码，所以敬请期待</li>
 			</ul>
 		</ul>
+		
+		<p>在线生成options.txt内容</p>
+		<p>请输入mod类型（lib或其他）：<input id="type" type="text" /></p>
+		<p>请输入mod主类（包名.类名）：<input id="class" type="text" /></p>
+		<p>请输入mod要调用的方法：<input id="method" type="text"></p>
+		<button onclick="output()">输入完成</button>
+		<p>输出结果（复制到options.txt中）:</p>
+		<script>
+			function output(){
+				var v="type:"+document.getElementById("type").value;
+				var v2;
+				v2=document.createElement("p");
+				document.body.appendChild(v2);
+				v2.innerHTML=v;
+				v="main-class:"+document.getElementById("class").value;
+				v2=document.createElement("p");
+				document.body.appendChild(v2);
+				v2.innerHTML=v;
+				v="main-method:"+document.getElementById("method").value;
+				v2=document.createElement("p");
+				document.body.appendChild(v2);
+				v2.innerHTML=v;
+				document.innerHTML="";
+			}
+		</script>
 	</body>
 </html>
