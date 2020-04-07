@@ -43,12 +43,33 @@
 				<li>目前没有引擎代码，所以敬请期待</li>
 			</ul>
 		</ul>
-		<p>在线生成options.txt内容</p>
-		<p>请输入mod类型（lib或其他）：<input id="type" type="text" /></p>
-		<p>请输入mod主类（包名.类名）：<input id="class" type="text" /></p>
-		<p>请输入mod要调用的方法：<input id="method" type="text"></p>
-		<button onclick="output()">输入完成</button>
-		<p>输出结果（复制到options.txt中）:</p>
 		<script src="../../javascript/switch.js"></script>
+		<script src="../../javascript/URL.js"></script>
+		<p>在线生成options.txt内容（支持get请求传入）</p>
+		<script>
+			var v2=get("type");
+			var v3=get("main-class");
+			var v4=get("main-method");
+			if(v2!=undefined||v3!=undefined||v4!=undefined){
+				output(v2,v3,v4);
+			}else{
+				var v=document.createElement("p");
+				document.body.appendChild(v);
+				p.innerHTML="请输入mod类型（lib或其他）：<input id='type' type='text' />";
+				v=document.createElement("p");
+				document.body.appendChild(v);
+				p.innerHTML="请输入mod主类（包名.类名）：<input id='class' type='text' />";
+				v=document.createElement("p");
+				document.body.appendChild(v);
+				p.innerHTML="请输入mod要调用的方法：<input id='method' type='text' />";
+				v=document.createElement("button");
+				v.addEventListener("click",function(){
+					output(document.getElementById('type').value,document.getElementById('class').value,document.getElementById('method').value);
+				},true);
+				document.body.appendChild(v);
+				v.innerHTML="输入完成";
+			}
+		</script>
+		<p>输出结果（复制到options.txt中）:</p>
 	</body>
 </html>
