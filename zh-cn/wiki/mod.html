@@ -2,14 +2,19 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="../../css/mod.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/index.css" />
 		<link rel="icon" type="image/icon" href="../../favicon.ico" />
 		<title>mod开发教程（这不是Java教程）</title>
 	</head>
 	<body>
+		<header id="header">
+		</header>
+		<script src="../../javascript/changeCSS.js"></script>
+		<script src="//detector006.github.io/JavaScript/cookie.js"></script>
+		<script src="../../javascript/header.js"></script>
 		<h2>本游戏目前只有jar版本，后续可能会加入HTML5版本</h2>
 		<p>mod开发分为jar版mod和存档数据包</p>
-		<ul>
+		<ul class="explanation">
 			<li><h2>jar版</h2></li>
 			<ul>
 				<li>使用JDK11编译，或使用mod制作器</li>
@@ -17,12 +22,13 @@
 				<li>类似regdit()的方法是对mod的支持，这代表你需要java面向对象</li>
 				<li>例如你要注册一个物品，你需要继承Item类，这一系列的机制用到了Java多态</li>
 				<li>然后把你注册的类的对象传入对应方法的参数</li>
-				<li>方块、实体不知道<a href="https://space.bilibili.com/157262276/">来自四次元的雪莉</a>有没有写对应的支持</a></li>
+				<li>方块、实体不知道<a href="//space.bilibili.com/157262276/">来自四次元的雪莉</a>有没有写对应的支持</a></li>
 				<li>如果有，会加入对应的API文档</li>
 				<li>接下来我们看看mod的载入方法</li>
 				<ul>
 					<li>你需要在jar根目录下建一个文件：options.txt，然后在里面写一些东西</li>
 					<li>一个mod必须写这些参数：type:、main-class:</li>
+					<li>支持的多人游戏需要额外的参数：mod-id:</li>
 					<li>如果没有main-method参数，则main-class参数指向的类必须继承modTemplate类</li>
 					<li>忽略空行和开头、结尾的空格</li>
 				</ul>
@@ -76,5 +82,12 @@
 				v5.innerHTML="输出结果（复制到options.txt）";
 			}
 		</script>
+		<hr />
+		<div class="warn">
+			<br />
+			<p>注意，在线生成器可能不会同步更新mod加载算法</p>
+			<p class="info">但是你可以去issues提出来</p>
+			<a class="info" href="//github.com/javaherobrine/javaherobrine.github.io/issues/new">issues传送门</a>
+		</div>
 	</body>
 </html>
