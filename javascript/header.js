@@ -24,7 +24,8 @@ temp2.addEventListener("click",function(){
 		}
 	}
 },true);
-temp.appendChild(temp2);
+temp2=temp.appendChild(temp2);
+temp.innerHTML="下载";
 function goTo(){
 	var strFullPath=window.document.location.href;
 	var strPath=window.document.location.pathname;

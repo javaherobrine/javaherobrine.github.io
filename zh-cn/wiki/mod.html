@@ -60,20 +60,22 @@
 				var v5=document.createElement("p");
 				v5=document.body.appendChild(v5);
 				v5.innerHTML="输出结果（复制到options.txt）";
-				output(v2,v3,v4);
 			}else{
 				var v=document.createElement("p");
+				v.id="t";
 				v=document.body.appendChild(v);
 				v.innerHTML="请输入mod类型（lib或其他）：<input id='type' type='text' />";
 				v=document.createElement("p");
+				v.id="mc";
 				v=document.body.appendChild(v);
 				v.innerHTML="请输入mod主类（包名.类名）：<input id='class' type='text' />";
 				v=document.createElement("p");
+				v.id="mm";
 				v=document.body.appendChild(v);
 				v.innerHTML="请输入mod要调用的方法：<input id='method' type='text' />";
 				v=document.createElement("button");
 				v.addEventListener("click",function(){
-					output(document.getElementById('type').value,document.getElementById('class').value,document.getElementById('method').value);
+					selete();
 				},true);
 				document.body.appendChild(v);
 				v.innerHTML="输入完成";
@@ -81,6 +83,15 @@
 				v5=document.body.appendChild(v5);
 				v5.innerHTML="输出结果（复制到options.txt）";
 			}
+		</script>
+		<script>
+			function selete(){
+				if(!(document.getElementById("type")==undefined&&document.getElementById("class")==undefined&&document.getElementById("method")==undefined)){
+					output(document.getElementById("t"),document.getElementById("type").value,document.getElementById("mc"),document.getElementById("class").value,document.getElementById("mm"),document.getElementById("method").value);
+				}else{
+					output(document.getElementById('type').value,document.getElementById('class').value,document.getElementById('method').value);
+				}
+			}	
 		</script>
 		<hr />
 		<div class="warn">
