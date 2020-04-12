@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css" />
+		<link rel="icon" type="image/icon" href="../../favicon.ico">
+		<title>详细的开发文档</title>
+	</head>
+	<body>
+		<header id="header"></header>
+		<hr />
+		<script src="//detector006.github.io/JavaScript/cookie.js"></script>
+		<script src="../../javascript/header.js"></script>
+		<h2>注意：部分代码在<a href="github.com/lovelyzeeiam/CraftGame">这里</a>，这里只有目前有的API</h2>
+		<h2>且部分功能与LWJGL引擎耦合度极高，所以可能有些功能还是没有的</h2>
+		<ul>
+			<li>注册物品：</li>
+			<ul>
+				<li>step1：继承io.github.javaherobrine.item.ItemModal类</li>
+				<li>step2：实现两个抽象方法</li>
+				<li>注：如果两个方法只需要一个，另一个方法主体可以留空</li>
+				<li>step3：执行Item.regdit(ItemModal)方法</li>
+			</ul>
+			<li>注册效果：</li>
+			<ul>
+				<li>step1:继承io.github.javaherobrine.effect.EffectModal类</li>
+				<li>step2:实现一个抽象方法</li>
+				<li>step3:执行Effect.regdit(EffectModal)方法</li>
+			</ul>
+		</ul>
+	</body>
+</html>
