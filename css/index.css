@@ -14,9 +14,13 @@
 	font-size:16px;
 	font-family: "lucida console";
 }
-.java{
-	font-family:"consolas";
-}
 #header{
 	text-align: center;
+}
+.javacode{
+	font-family:"Consolas";
+}
+.javaException{
+	font-family:"Consolas";
+	color:rgb(255,0,0);
 }
