@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>craftgame-tcp库介绍</title>
+		<link rel="stylesheet" type="text/css" href="../../css/index.css" />
+	</head>
+	<body>
+	<p>首先我们上♂一段非常简单的客户端代码</p>
+	<pre>
+		<code class="javacode">
+import java.net.*;
+import java.io.*;
+public class Client{
+	public static void main(String[] args) throws IOException{
+		Socket soc=new Socket("localhost",8888);
+		InputStream is=soc.getInputStream();
+		System.out.println(new String(is.readAllBytes()));
+	}
+}
+		</code>
+	</pre>
+		<p>如果服务器发送的数据量还很大呢？</p>
+		<p>继续上♂服务器的代码</p>
+		<pre>
+			<code class="javacode">
+import java.net.*;
+import java.io.*;
+public class Server{
+	public static void main(String[] args) throws IOException{
+		ServerSocket server=new ServerSocket(8888);
+		Socket soc=server.accept();
+		OutputStream os=soc.getOutputStream();
+		FileInputStream fis=new FileInputStream("C:/Windows/explorer.exe");
+		os.write(fis.readAllBytes());
+		os.flush();
+	}
+}
+			</code>
+		</pre>
+		<p>这在本机测试还好，如果搬到真实的网络环境上（比如找人帮忙测试），那就有问题了</p>
+		<p>因为MTU的限制，过大的数据会分开发送，我们读取只能读取到其中的一个数据包，这就有问题了</p>
+		<p class="javaException">java.net.SocketException: Connection reset by peer: socket write error</p>
+		<p>恭喜服务器抛出这个异常</p>
+		<hr />
+		<p>我很高兴你看到了这里，接下来我们就来看一下解决方法吧</p>
+		<p>解决的原理很简单，就是循环读取，让IO流读到每一个字节而不是让客户端读完一次就结束读取</p>
+		<p>就像这样（还是上♂代码）</p>
+		<pre>
+			<code class="javacode">
+import java.io.*;
+import java.net.*;
+public class Client{
+	public static void main(String[] args) throws IOException{
+		Socket socket=new Socket("localhost",8888);
+		InputStream is=socket.getInputStream();
+		int flag=0;
+		ByteArrayOutputStream baos=new ByteArrayOutputStream();
+		while(true){
+			baos.write(is.read());
+			flag++;
+		}
+	}
+}
+			</code>
+		</pre>
+		<p>可能有人注意到了ByteArrayOutputStream，这作为一个缓存</p>
+		<p>可能你们会问了，怎么返回数据？很简单，上♂代码，在这之前我们封装成线程</p>
+		<pre>
+			<code class="javacode">
+import java.net.*;
+import java.io.*;
+public class InputThread extends Thread{
+	private ByteArrayOutputStream baos=new ByteArrayOutputStream();
+	private InputStream is;
+	@Override
+	public void run(){
+		while(true){
+			try{
+				baos.write(is.read());
+				inputedBytes++;
+			}catch(IOException e){
+			}
+		}
+	}
+	public void reset(){
+		baos.reset();
+		gotBytes=0;
+		inputedBytes=0;
+	}
+	public InputThread(Socket soc) throws IOException{
+		is=soc.getInputStream();
+	}
+	public synchronized byte[] readNBytes(int length) throws IOException{
+		ByteArrayInputStream temp=new ByteArrayInputStream(baos.toByteArray());
+		byte[] b=new byte[length];
+		temp.read(b);
+		return b;
+	}
+}
+			</code>
+		</pre>
+		<p>这就实现了非常简单的读取</p>
+		<p>但是，我们要怎么才能自动指定读取的字节数？答案是发送的时候多发一个int类型的数据</p>
+		<p>上♂转换的代码</p>
+		<pre>
+			<code class="javacode">
+public class IOUtils{
+	public static int byte4ToInt(byte[] bytes, int off) {
+		int b0 = bytes[off] & 0xFF;
+		int b1 = bytes[off + 1] & 0xFF;
+		int b2 = bytes[off + 2] & 0xFF;
+		int b3 = bytes[off + 3] & 0xFF;
+		return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
+	}
+	public static byte[] intToByte4(int i) {
+		byte[] targets = new byte[4];
+		targets[3] = (byte) (i & 0xFF);
+		targets[2] = (byte) (i >> 8 & 0xFF);
+		targets[1] = (byte) (i >> 16 & 0xFF);
+		targets[0] = (byte) (i >> 24 & 0xFF);
+		return targets;
+	}
+}
+			</code>
+		</pre>
+		<p>那么输出该怎么写呢？</p>
+		<p>上♂代码</p>
+		<pre>
+			<code class="javacode">
+import java.io.*;
+import java.net.*;
+public class OutputThread extends Thread{
+	private byte[] writeData;
+	private OutputStream os;
+	public void run(){
+		while(true){
+			try{
+				if(writeData!=null){
+					os.write(IOUtils.intToByte4(writeData.length));
+					os.flush();
+					os.write(writeData);
+					os.flush();
+					writeData=null;
+				}else{
+					continue;
+				}
+			}catch(IOException e){
+			}
+		}
+	}
+	public OutputThread(Socket soc) throws IOException{
+		os=soc.getOutputStream();
+	}
+	public void write(byte[] data){
+		writeData=data;
+	}
+}
+			</code>
+		</pre>
+		<p>我们的输入也要做出相应的改变：</p>
+		<p>继续上♂代码</p>
+		<pre>
+			<code class="javacode">
+import java.net.*;
+import java.io.*;
+public class InputThread extends Thread{
+	private ByteArrayOutputStream baos=new ByteArrayOutputStream();
+	private InputStream is;
+	@Override
+	public void run(){
+		while(true){
+			try{
+				baos.write(is.read());
+				inputedBytes++;
+			}catch(IOException e){
+			}
+		}
+	}
+	public void reset(){
+		baos.reset();
+		gotBytes=0;
+		inputedBytes=0;
+	}
+	public InputThread(Socket soc) throws IOException{
+		is=soc.getInputStream();
+	}
+	public synchronized byte[] readNBytes(int length) throws IOException{
+		ByteArrayInputStream temp=new ByteArrayInputStream(baos.toByteArray());
+		byte[] b=new byte[length];
+		temp.read(b);
+		return b;
+	}
+	public synchronized byte[] readPacket(){
+		return readNBytes(IOUtils.byte4ToInt(readNBytes(4),0));
+	}
+}
+			</code>
+		</pre>
+		<p>这就解决完了</p>
+		<hr />
+		<p>说了半天理论，craftgame-tcp库到底是啥？</p>
+		<p>我很高兴你问了这个问题，因为这个问题是我现在要说的</p>
+		<p>简单来说是这个解决方法的简单实现，详细信息：</p>
+		<ul>
+			<li>更强大，占用更低的IO Thread</li>
+			<li>好用的NetUtils</li>
+			<li>功能更加齐全的IOUtils</li>
+			<li>帮助文档<a href="../../document/tcp/index.html">在这里</a></li>
+		</ul>
+		<del><h6>求代码一共被上♂了多少次</h6></del>
+	</body>
+</html>
