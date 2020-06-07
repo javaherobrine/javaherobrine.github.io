@@ -17,9 +17,6 @@
 #header{
 	text-align: center;
 }
-.javacode{
-	font-family:"Consolas";
-}
 .javaException{
 	font-family:"Consolas";
 	color:rgb(255,0,0);
