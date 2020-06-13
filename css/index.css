@@ -21,3 +21,32 @@
 	font-family:"Consolas";
 	color:rgb(255,0,0);
 }
+.tips{
+	font-style:italic;
+	color:gray;
+	text-align: center;
+}
+.tips a:link{
+	color:gray;
+}
+.tips a:visited{
+	color:silver;
+}
+.cgms{
+	border-style: none;
+	border-width:100%;
+	background-color: rgb(233, 233, 233);
+	border-radius:25px;
+	box-shadow: 10px 10px 5px #888888;
+}
+ul .menu{
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+pre,code{
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+.easterEgg{
+	background-color:black;
+}
