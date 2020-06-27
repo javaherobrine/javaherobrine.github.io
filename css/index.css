@@ -39,14 +39,33 @@
 	border-radius:25px;
 	box-shadow: 10px 10px 5px #888888;
 }
-ul .menu{
+.menu{
+	text-align:center;
 	list-style-type:none;
 	margin:0;
 	padding:0;
+}
+.menu>li{
+	float:left;
+}
+.menu>li>a{
+	height:30px;
+	text-align: center;
+	text-decoration:none;
+	background-color: rgb(218, 218, 218);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	display:block;
+	width:60px;
 }
 pre,code{
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
 .easterEgg{
 	background-color:black;
+	border-radius:5px;
+}
+.findedEasterEgg{
+	background-color:black;
+	color:white;
+	border-radius:5px;
 }
