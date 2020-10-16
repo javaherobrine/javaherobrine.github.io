@@ -1,56 +1,13 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<title>cgms相关内容</title>
+		<link rel="stylesheet" type="text/css" href="../../css/prism.css"/>
+		<script src="../../javascript/prism.js"></script>
 		<meta charset="utf-8">
-		<title>什么是cgms？</title>
-		<link rel="stylesheet" type="text/css" href="../../css/index.css" />
 	</head>
-	<body>
-		<p class="tips">如果你是第一次来这里，建议去看一下vcgm，链接<a href="vcgm.html">这里</a></p>
-		<p>cgms示例代码</p>
-		<div class="cgms">
-			<pre>
-				<code>
-// 这是单行注释 \
-后面加上反斜杠可以向下延伸一行
-/*
-我是
-多行注释*/
-#package 'example1'
-#ops 'nolib','mainClass','mainFunc' 
-import 'Mod';
-const b as Basic; // const不提升
-import 'Basic'; // import语句和变量声明会提升
-stay b&ltint&gt num1; // stay关键字阻止提升
-hoist Basic&ltstring&gt str1; // hoist关键字可以提升语句，提升后排序为语句的出现顺序
-class mainClass{
-    function&ltBasic&ltvoid&gt&gt mainFunc(){}
-}
-class apple:Mod&ltitem&gt{ // 声明apple类并继承Mod&ltitem&gt类
-    // 此处省略内容
-}
-Registry.egistered(&ampapple); // 注册apple类并传入类的对象化
-function&ltBasic&ltvoid&gt&gt nothing(){
-    b&ltint&gt num666;
-}
-// 此处无法使用num666因为它属于函数内部。
-function&ltb&ltint&gt&gt aNumberFunction(b&ltint&gt num1,b&ltint&gt num2){ /* 作用域的容器重名并耦合时，优先级如下
-上级作用域&lt下级作用域
-函数外容器&lt函数内部容器&lt函数形参
-任何作用域的容器不能重复声明
-    #destoryArea
-    // 摧毁作用域，这会导致num3的作用域在上一层作用域————全局作用域
-    Basic&ltint&gt num3=args.num1+args.num2; // args是实参对象
-    return num3;
-}
-// 此处num3声明但未赋值，形成暂时性死区，不能使用
-aNumberFunction(1,2); // 3
-// 此处num3的值为3
-				</code>
-			</pre>
-		</div>
-		<p>详细规范在<a href="//docs.qq.com/doc/DTW9VVUFFb0JvbEdN">这里</a></p>
-		<p>CGMS元语句在<a href="meta.txt">这里</a>（en）</p>
-		<del><span class="easterEgg" title="刮开有奖(滑稽)">目前只有这么多信息了</span></del>
+	<body title="该内容不是关于JawaScript的(原cgms项目改名为JawaScript,我也不知道为什么这么叫,反正很憨),原来的cgms项目现在由我接管">
+		<p align="center">cgms内容现在由我接管，相较于<a href="jas.html">JawaScript</a>的语法改动很大</p>
+		<hr />
 	</body>
 </html>
