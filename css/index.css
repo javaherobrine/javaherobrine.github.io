@@ -69,3 +69,15 @@ pre,code{
 	color:white;
 	border-radius:5px;
 }
+table{
+	border-style: solid;
+}
+tr{
+	border-style: solid;
+}
+th{
+	border-syle: soild;
+}
+td{
+	border-style: solid;
+}

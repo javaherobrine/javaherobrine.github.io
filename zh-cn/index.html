@@ -2,9 +2,29 @@
 <html>
 	<head>
 		<link href="../css/index.css" type="text/css" rel="stylesheet" />
+		<script src="../javascript/JSON.js"></script>
 		<meta charset="utf-8">
 		<title>CraftGame</title>
 	</head>
 	<body>
+		<a href="./developer/">开发者页面</a>
+		<table>
+			<tr id="download">
+				<th>下载链接</th>
+			</tr>
+			<tr id="source">
+				<th>下载源</th>
+			</tr>
+		</table>
+		<script>
+			let dld=document.getElementById("download");
+			let src=document.getElementById("source");
+			let json=getOnlineJSONSource("./sources.json");
+			function append(parent,content){
+				let d=document.createElement("td");
+				d.innerHTML=content;
+				parent.appendChild(d);
+			}
+		</script>
 	</body>
 </html>
