@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"io.github.javaherobrine.ioStream","h":"","u":""},{"l":"io.github.javaherobrine.net","h":"","u":""},{"l":"所有程序包","h":"","u":"allpackages-index.html"}]
+packageSearchIndex = [{"l":"io.github.javaherobrine","h":"","u":""},{"l":"io.github.javaherobrine.ioStream","h":"","u":""},{"l":"io.github.javaherobrine.net","h":"","u":""},{"l":"io.github.javaherobrine.net.event","h":"","u":""},{"l":"io.github.javaherobrine.net.sync","h":"","u":""},{"l":"所有程序包","h":"","u":"allpackages-index.html"}]
