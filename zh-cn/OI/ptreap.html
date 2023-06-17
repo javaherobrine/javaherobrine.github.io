@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>可持久化旋转式Treap</title>
+		<link rel="stylesheet" href="../../css/prism.css" />
+	</head>
+	<body>
+		<p>谁跟你讲旋转式的Treap不能可持久化的？我跟你讲可以！</p>
+		<p>首先，为什么有东西可以可持久化？因为他单次修改只会影响一些节点，例如线段树，
+		只有modify函数递归访问的节点是受到修改的，可持久化的思想就是修改既新建。
+		我们还知道，旋转式Treap的插入和删除都只是对一条链上的节点进行修改（需要修改size）。
+		而且我们一直忽略一个东西：旋转式Treap的插入只会把insert函数递归经过的节点旋上来
+		（如果不满足堆序），而删除在找到节点的时候，我们只需要提前把需要往上旋转的节点
+		提前新建出来，这样就不会因为这次旋转破坏树的结构了。就多了几行代码而已</p>
+		<p>代码如下</p>
+		<pre><code class="language-java">
+#include&ltbits/stdc++.h&gt
+using namespace std;
+constexpr int INF=2147483647;
+struct TreapNode{
+	TreapNode* kids[2];
+	TreapNode*& left=kids[0];
+	TreapNode*& right=kids[1];
+	int count=0,size=0,value=0,priority=-1;
+	TreapNode(){
+		tie(left,right)=make_pair(this,this);
+	}
+	TreapNode(TreapNode* NIL){
+		tie(left,right)=make_pair(NIL,NIL);
+	}
+	TreapNode(TreapNode& rhs){
+		tie(count,size,value,priority,left,right)=make_tuple(rhs.count,rhs.size,rhs.value,rhs.priority,rhs.left,rhs.right);
+	}
+	void pushup(){
+		size=count+left->size+right->size;
+	}
+};
+TreapNode* NIL=new TreapNode;
+struct PTreap{
+	vector&ltTreapNode*&gt history{NIL};
+	void insert(int version,int value){
+		history.push_back(history[version]);
+		insert(history.back(),value);
+	}
+	void remove(int version,int value){
+		history.push_back(history[version]);
+		remove(history.back(),value);
+	}
+	int previous(int version,int x){
+		TreapNode* n=history[version];
+		history.push_back(n);
+		int ans=-INF;
+		while(n!=NIL){
+			if(n->value<x){
+				ans=n->value;
+				n=n->right;
+			}else{
+				n=n->left;
+			}
+		}
+		return ans;
+	}
+	int next(int version,int x){
+		TreapNode* n=history[version];
+		history.push_back(n);
+		int ans=INF;
+		while(n!=NIL){
+			if(n->value>x){
+				ans=n->value;
+				n=n->left;
+			}else{
+				n=n->right;
+			}
+		}
+		return ans;
+	}
+	int kth(int version,int k){
+		history.push_back(history[version]);
+		return kth(history.back(),k);
+	}
+	int rank(int version,int k){
+		history.push_back(history[version]);
+		return rank(history.back(),k);
+	}
+private:
+	int rank(TreapNode*& n,int x){
+		if(n==NIL){
+			return 1;
+		}
+		if(n->value==x){
+			return n->left->size+1;
+		}else if(n->value>x){
+			return rank(n->left,x);
+		}else{
+			return n->left->size+n->count+rank(n->right,x);
+		}
+	}
+	int kth(TreapNode*& n,int k){
+		if(n==NIL){
+			return INF;
+		}
+		if(k<=n->left->size){
+			return kth(n->left,k);
+		}else if(k<=n->left->size+n->count){
+			return n->value;
+		}else{
+			return kth(n->right,k-n->left->size-n->count);
+		}
+	}
+	void insert(TreapNode*& ptr,int value){
+		if(ptr==NIL){
+			ptr=new TreapNode{NIL};
+			tie(ptr->size,ptr->count,ptr->value,ptr->priority)=make_tuple(1,1,value,rand());
+			return;
+		}
+		ptr=new TreapNode{*ptr};
+		if(ptr->value==value){
+			ptr->count+=1;
+			ptr->size+=1;
+		}else{
+			int direction=value<ptr->value?0:1;
+			insert(ptr->kids[direction],value);
+			ptr->pushup();
+			if(ptr->priority>ptr->kids[direction]->priority){
+				rotate(ptr,direction);
+			}
+		}
+	}
+	void remove(TreapNode*& ptr,int value,bool node=1){
+		if(ptr==NIL){
+			return;
+		}
+		if(node){
+			ptr=new TreapNode{*ptr};
+		}
+		if(ptr->value==value){
+			if(ptr->count>1){
+				ptr->size-=1;
+				ptr->count-=1;
+				return;
+			}
+			if(ptr->left==NIL||ptr->right==NIL){
+				TreapNode* nt=ptr->left==NIL?ptr->right:ptr->left;
+				delete ptr;
+				ptr=nt;
+				return;
+			}
+			int direction=ptr->left->priority<ptr->right->priority?0:1;
+			ptr->kids[direction]=new TreapNode{*ptr->kids[direction]};
+			rotate(ptr,direction);
+			remove(ptr->kids[direction^1],value,0);
+			ptr->pushup();
+		}else{
+			int direction=value<ptr->value?0:1;
+			remove(ptr->kids[direction],value);
+			ptr->pushup();
+		}
+	}
+	void rotate(TreapNode*& ptr,int direction){
+		TreapNode* nt=ptr->kids[direction];
+		ptr->kids[direction]=nt->kids[direction^1];
+		nt->kids[direction^1]=ptr;
+		ptr->pushup();
+		nt->pushup();
+		ptr=nt;
+	}
+};
+int main(){
+	srand(time(0));
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	PTreap treap;
+	int N;
+	cin>>N;
+	while(N--){
+		int op,history,x;
+		cin&gt&gthistory&gt&gtop&gt&gtx;
+		if(op==1){
+			treap.insert(history,x);
+		}else if(op==2){
+			treap.remove(history,x);
+		}else if(op==3){
+			cout&lt&lttreap.rank(history, x)&lt&lt"\n";
+		}else if(op==4){
+			cout&lt&lttreap.kth(history,x)&lt&lt"\n";
+		}else if(op==5){
+			cout&lt&lttreap.previous(history,x)&lt&lt"\n";
+		}else{
+			cout&lt&lttreap.next(history,x)&lt&lt"\n";
+		}
+	}
+}
+			</code>
+		</pre>
+	</body>
+	<script src="../../javascript/prism.js"></script>
+</html>
