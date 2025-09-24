@@ -1,0 +1,12 @@
+var h=document.head;
+var l=document.createElement("link");
+l.href="/css/overall.css";
+l.type="text/css";
+l.rel="stylesheet";
+h.appendChild(l);
+var b=document.body;
+var but=document.createElement("button");
+but.innerHTML="返回上一页";
+but.setAttribute("onclick","window.history.back()");
+b.appendChild(document.createElement("br"));
+b.appendChild(but);

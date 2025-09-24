@@ -65,6 +65,9 @@
 		<ul>
 			<li>一定要用cerr调试输出！调试的时候不要用cout，因为有缓冲区（遇到RE和TLE你看不到cout，但是可以看到cerr）。<i>特别的，如果你用cstdio，使用fprintf(str0,str1,stderr)</i></li>
 			<li>如果你使用DevC++，千万不要用它的调试功能，你会脑溢血的</li>
+			<li>无论如何不要忘掉终极手段：重构（重新写一遍）</li>
+			<li><strong>如果你非要用cout调试输出</strong>，先执行cout&lt&ltunitbuf，这样他会自动刷新缓冲区</li>
+			<li><strong>千万不要</strong>混用cout和cerr，除非你用Eclipse IDE（Eclipse会用不同的颜色标记），否则cout和cerr可能会混一起，除非你用了上一条提示的代码（cout会在输出后立刻刷新缓冲区）</li>
 		</ul>
 		<p>附加资源：<a href="https://github.com/javaherobrine/OI/blob/main/debug.hpp">debug.hpp</a></p>
 	</body>

@@ -1,0 +1,9 @@
+body{
+	font-family: "Consolas","Lucida Console", Monaco, monospace;
+}
+code{
+	font-family: "Consolas","Lucida Console", Monaco, monospace;
+}
+span.easteregg{
+	background-color: #000000;
+}

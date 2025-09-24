@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>动量理论</title>
+	</head>
+	<body>
+		<p>这里直接给出动量的定义式：<strong>p</strong>=m<strong>v</strong></p>
+		<p>然后，Newton说，<strong>F</strong>=d<strong>p</strong>/dt，而m和<strong>v</strong>是无关的，因此可以得到<strong>F</strong>=m<strong>a</strong>，也就是我们常常见到的Newton第二定律</p>
+		<p>如果我们把时间的微分给到力，那么就是<strong>F</strong>dt=md<strong>v</strong>，也就是动量定理，但这里写的是微分的形式</p>
+		<p>Newton还认为，力的作用是相互的，也就是说<strong>F</strong>=-<strong>F'</strong></p>
+		<p>一对正在相互作用的物体，如果我们看作一个整体，会发现<strong>F</strong>dt+<strong>F'</strong>dt=<strong>0</strong>，也就是说，它们的d<strong>p</strong>+d<strong>p'</strong>=<strong>0</strong>，它们的和动量是一个常向量</p>
+		<p>这个叫动量守恒，说的是在一对相互作用力下，两个物体的总动量是不变的</p>
+		<p>但是，如果Newton运动定律不再成立？</p>
+		<p>实质上，动量仍然应当守恒，例如Einstein的相对论中</p>
+		<p>此处动量定义仍旧没变，只是质量应为动质量m=m[0]/sqrt(1-v^2/c^2)</p>
+		<p>动量守恒实质上是空间平移不变性的要求，我在这个地方做实验是这个结果，我换一个地方做还是这个结果</p>
+		<hr />
+		<p>我们直接给出角动量的概念<strong>L</strong>=<strong>r</strong>×<strong>p</strong></p>
+		<p>它对时间的导数是什么呢</p>
+		<p>d<strong>L</strong>/dt=d<strong>r</strong>/dt×<strong>p</strong>+<strong>r</strong>×d<strong>p</strong>/dt=<strong>v</strong>×<strong>p</strong>+<strong>r</strong>×<strong>F</strong>=<strong>r</strong>×<strong>F</strong>=<strong>M</strong></p>
+		<p>这个是说，合力矩是角动量对时间的变化率，这个叫做角动量定理</p>
+		<p>这个和刚体转动定理<strong>M</strong>=I<strong>β</strong>是等价的</p>
+		<p>还可以发现，对于有心力场，<strong>r</strong>若和<strong>F</strong>共线，<strong>M</strong>=<strong>0</strong>，那么会发现角动量就是一个常向量，这个在天体里面常用，据此我们可以直接推导出开普勒第二定律</p>
+		<p>类似动量，我们可以证明角动量也是类似的守恒的</p>
+		<p>这个是空间旋转不变性的要求，我在空间站上做实验，如果空间站是圆轨道的，不论空间站处于轨道上面的哪一点，我做实验的结果都应当一致</p>
+		<hr />
+		<p>我们直接给出正则动量的概念：<strong>P</strong>=<strong>p</strong>-q<strong>r</strong>×<strong>B</strong></p>
+		<p>在磁场里面的带电粒子所受到的Lorentz力<strong>f</strong>=q<strong>v</strong>×<strong>B</strong></p>
+		<p>如果忽略其他的作用，我们可以列出粒子的Newton运动方程d<strong>p</strong>/dt=q<strong>v</strong>×<strong>B</strong></p>
+		<p>那么在恒定场里面，d<strong>P</strong>/dt=d<strong>p</strong>/dt-q<strong>v</strong>×<strong>B</strong>=0</p>
+		<p>也就是，正则动量是一个常向量，是守恒的</p>
+		<p>那么，我们可以得到粒子所受到的Lorentz力的冲量<strong>I</strong>=q<strong>Δr</strong>×<strong>B</strong></p>
+		<p>利用叉乘的运算律，我们取分量，<strong>I[x]</strong>=q<strong>Δy</strong>×<strong>B</strong>和<strong>I[y]</strong>=q<strong>Δx</strong>×<strong>B</strong></p>
+		<hr />
+		<p>例题1：</p>
+		<p>一根线密度为λ的很长的绳子掉到地上，已经掉落的高度是<strong>h</strong>，重力加速度是<strong>g</strong>，求地板受到的冲力</p>
+		<p>那么，绳子的运动速度满足pow(<strong>v</strong>,2)=2<strong>g</strong>·<strong>h</strong></p>
+		<p>在dt的时间内，掉下来的绳子的长度是|<strong>v</strong>|dt，它们的质量是λ|<strong>v</strong>|dt，速度改变量为|<strong>v</strong>|，那么动量变化量就是|d<strong>p</strong>|=λpow(<strong>v</strong>,2)dt</p>
+		<p>这段绳子所受到的合外力的大小为2λ<strong></strong>g·<strong>h</strong></p>
+		<p>对于地面上的绳子，所受重力为λ<strong>g</strong>·<strong>h</strong></p>
+		<p>那么，地面给它的力就是3λ<strong>g</strong>·<strong>h</strong></p>
+		<p>Newton第三定律可得绳子给地板的冲力大小是3λ<strong>g</strong>·<strong>h</strong>，方向是向下的</p>
+		<hr />
+		<p>例题2：</p>
+		<p>证明开普勒第二定律</p>
+		<p>前文已经论及了，天体的角动量是守恒的</p>
+		<p>展开角动量的表达式，<strong>L</strong>=m<strong>r</strong>×<strong>v</strong></p>
+		<p>其中<strong>v</strong>=d<strong>r</strong>/dt</p>
+		<p>面积变化的微元dS=|<strong>r</strong>×<strong>v</strong>|/2，通过叉乘的几何意义ΔS=|<strong>r</strong>×<strong>Δr</strong>|/2并对其进行微分得到</p>
+		<p>那么dS=|<strong>r</strong>×<strong>v</strong>|/2=|<strong>L</strong>|/(2m)</p>
+		<p>dS/dt=d(|<strong>L</strong>|/2m)/dt=0，因为L是常向量，这个模是常数</p>
+		<p>也就是说，面积的变化随着时间的变化率是0，它是常数</p>
+		<p>这个就是开普勒第二定律</p>
+		<hr />
+		<p>例题3：</p>
+		<p>一个粒子，先后经过二个有界磁场<strong>B[1]</strong>和<strong>B[2]</strong>，宽度分别为<strong>d[1]</strong>和<strong>d[2]</strong>，恰好到达第二个磁场的边界，求最小速度</p>
+		<p>磁场的形状是无限长有限宽的矩形，且方向相同</p>
+		<p>在长的方向上计算冲量，第一个磁场给的冲量是q<strong>d[1]</strong>×<strong>B[1]</strong>，第二个是q<strong>d[2]</strong>×<strong>B[2]</strong></p>
+		<p>总的冲量是<strong>I[x]</strong>=q(<strong>d[1]</strong>×<strong>B[1]</strong>+<strong>d[2]</strong>×<strong>B[2]</strong>)</p>
+		<p>刚好到边界，说明宽方向的速度变成了0</p>
+		<p>如果要让速度最小，那么最好就只有宽方向的速度<strong>v[y]</strong>，且能量守恒要求E[k]=pow(<strong>p</strong>,2)/(2m)是不变的</p>
+		<p>那么，最好就是m<strong>v[y]</strong>=<strong>I[x]</strong></p>
+		<p>算出来<strong>v[y]</strong>=q(<strong>d[1]</strong>×<strong>B[1]</strong>+<strong>d[2]</strong>×<strong>B[2]</strong>)/(m)</p>
+		<script src="/javascript/overall.js"></script>
+	</body>
+</html>
