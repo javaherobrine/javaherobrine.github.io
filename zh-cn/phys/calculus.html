@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>微积分</title>
+	</head>
+	<body>
+		<p>这里讲解物理常用的微积分，但是不会和数学分析那样严谨</p>
+		<p>通常，导数有四种记号（牛顿、莱布尼茨、欧拉和拉格朗日都有自己的记号，自行查询），本笔记里面会使用莱布尼茨和拉格朗日的记号</p>
+		<p>在讲微积分之前，我有必要提一嘴函数的极限。</p>
+		<p>简单地说，对于一个函数f(x)，当x无限趋近于a时，f(x)无限趋近于b，那么f(x)在x=a处的极限就是b，由于我没有掌握LATEX，故笔记里面记作lim f(x) = b（x->a）</p>
+		<p>其中，a可以是±∞</p>
+		<p>利用几何学的知识，我们可以很容易的知道lim sinx/x = 0（x->0）</p>
+		<p>还有一个重要极限，是lim pow(1+1/x,x) = e（x->+∞)</p>
+		<p>对于函数f(x)，拉格朗日把它的导数记作f'(x)，而莱布尼茨将其计为df/dx</p>
+		<p>首先，我给出导数的定义，df/dx = lim Δf(x)/Δx（Δx->0），其中Δf(x)=f(x+Δx)-f(x)</p>
+		<p>几何学上，导数相当于函数图象上面一点切线的斜率，而若将f(x)看作位移随着时间变化的函数，df/dx表示的就是物体的瞬时速度（平均速度的极限）</p>
+		<p>利用导数的定义，我们可以计算一些函数的导数，例如下面我们计算函数exp(x)的导数：</p>
+		<p>dexp(x)/dx=lim (exp(x+Δx)-exp(x))/Δx = lim exp(x)(exp(Δx)-1)/Δx = lim exp(x)(pow(pow(1+Δx,1/Δx),Δx)-1)/Δx = lim exp(x)Δx/Δx = exp(x)（Δx->0）</p>
+		<p>用上类似的方法，我们可以计算出来下面的导数表：</p>
+		<p>同时，我们还有一些求导法则：</p>
+		<p>df(g(x))/dx=df/dg * dg/dx（复合函数的导数）</p>
+		<p>df(x)g(x)/dx=df(x)/dx*g(x)+f(x)*dg(x)/dx（莱布尼茨法则，计算函数的乘积的导数）</p>
+		<p>d(f(x)±g(x))/dx=df(x)/dx±dg(x)/dx（函数的加减）</p>
+		<p>然后，若是f(g(x))=x，则称f(x)和g(x)互为反函数，我已经知道了f(x)，我想要求g(x)的导函数，可以利用复合函数的求导公式来得到：</p>
+		<p>那么，我们发现，df/dg*dg/dx=1，利用这个可以解出dg/dx=dg/df</p>
+		<p>例如，f(x)=exp(x)，显然g(x)=ln(x)，f(g(x))=x，df/dx=1=df/dg*dg/dx</p>
+		<p>而，df/dg=dexp(ln(x))/dln(x)=exp(ln(x))=x</p>
+		<p>所以，dg/dx=1/x</p>
+		<p>结合上述的求导法则，我们能够推导出常见函数的导数：</p>
+		<ul>
+			<li>dC/dx=0，C是常数</li>
+			<li>dexp(x)/dx=exp(x)</li>
+			<li>dln(x)/dx=1/x</li>
+			<li>dpow(x,a)/dx=apow(x,a-1)</li>
+			<li>dsin(x)/dx=cos(x)</li>
+			<li>dcos(x)/dx=-sin(x)</li>
+			<li>dtan(x)/dx=pow(sec(x),2)</li>
+			<li>dcot(x)/dx=-pow(csc(x),2)</li>
+			<li>dsec(x)/dx=tan(x)sec(x)</li>
+			<li>dcsc(x)/dx=-cot(x)csc(x)</li>
+			<li>dsinh(x)/dx=cosh(x)</li>
+			<li>dcosh(x)/dx=sinh(x)</li>
+			<li>dtanh(x)/dx=-1/pow(cosh(x),2)</li>
+			<li>darcsin(x)/dx=1/sqrt(1-pow(x,2))</li>
+			<li>darccos(x)/dx=-1/sqrt(1-pow(x,2))</li>
+			<li>darctan(x)/dx=1/(1+pow(x,2))</li>
+			<li>darsinh(x)/dx=1/sqrt(pow(x,2)+1)</li>
+			<li>darcosh(x)/dx=1/sqrt(pow(x,2)-1)</li>
+			<li>dartanh(x)/dx=1/(1-pow(x,2))</li>
+		</ul>
+		<p>其中，双曲函数的定义和它们的反函数分别是</p>
+		<ul>
+			<li>sinh(x)=(exp(x)-exp(-x))/2</li>
+			<li>cosh(x)=(exp(x)+exp(-x))/2</li>
+			<li>tanh(x)=sinh(x)/cosh(x)</li>
+			<li>arsinh(x)=ln(x+sqrt(pow(x,2)+1))</li>
+			<li>arcosh(x)=ln(x+sqrt(pow(x,2)-1))</li>
+			<li>artanh(x)=(ln(1+x)-ln(1-x))/2</li>
+		</ul>
+		<p>在导数中，我们计df=lim Δf，dx=lim Δx（均为Δx->0）</p>
+		<p>当Δx->0时，各个量的变化值叫做它们的微分，显然，导数可以看作函数值的微分和自变量的微分的商，所以导数又叫微商</p>
+		<p>那么对于参数方程y=f(t)和x=g(t)，我们如何计算dy/dx呢？</p>
+		<p>我们很容易计算出，f'(t)=dy/dt，g'(t)=dx/dt，然后我们把dt消掉，就有dy/dx=f'(t)/g'(t)</p>
+		<p>对于隐函数F(x,f(x))=0，我们如何计算df/dx呢？</p>
+		<p>直接暴力求导！直接计算dF/dx=0</p>
+		<p>例如，我想计算F(x,y)=pow(x,2)+pow(y,2)-11451419198102147483647=0中的dy/dx</p>
+		<p>显然，F'(x,y)=0</p>
+		<p>然后，利用求导法则，dpow(x,2)/dx=2x</p>
+		<p>dpow(y,2)/dx其实是一个复合函数，是i=pow(x,2)和y=y(x)的复合，利用复合函数的求导，我有dpow(y,2)/dx=2yy'</p>
+		<p>也就是2x+2yy'=0，解得y'=-x/y</p>
+		<p>对于一阶微分，显然有df=f'(x)dx，而且具有形式不变性：无论是对哪个变量微分，微分的结果是不变的</p>
+		<p>比如说，我有一个函数f(g(x))，我若是对g微分，则d[g]f=f'(g(x))dg</p>
+		<p>我对x微分，d[x]f=f'(g(x))g'(x)dx=f'(g(x))dg</p>
+		<p>也就是，一阶微分中，微分符号可以不区分下标</p>
+		<p>然后，对于函数f(x)，如果取一阶微分近似，有f(x)=f(x[0])+f'(x[0])(x-x[0])+o(x)</p>
+		<p>相当于用切线拟合曲线</p>
+		<p>其中，o(x)是一个x的高阶无穷小量）</p>
+		<p>然后呢，如果我取g(x)=f'(x)，显然g(x)可能还可以再次求导</p>
+		<p>也就是，f(x)可能有高阶导数，如其二阶导数f''(x)，用莱布尼茨的记号写作d^2f/dx^2，注意这里的d^2f是d(df)，dx^2其实是pow(dx,2)，只是很多时候括号是不写的</p>
+		<p>那么对于f(x)的n阶导数，可以记作f'''''......（n个'）(x)或者f^(n)(x)，用莱布尼茨的记号可以写作pow(d,n)f/pow(dx,n)</p>
+		<p>对于任意的f(x)，若其n阶可导，有Taylor多项式T[n]=Σ((pow(d,i)f/pow(dx,i)|x=x[0])*pow(x-x[0],i)/i!)（i∈[0,n]）</p>
+		<p>若其n+1阶可导，那么有Taylor定理f(x)=T[n]+(pow(d,n+1)f/pow(dx,n+1)|x=x[0]+θ(x-x[0]))*pow(x-x[0],n+1)/(n+1)!，其中θ∈(0,1)</p>
+		<p>若其无穷阶可导，那么f(x)可以展开为Taylor级数（令Taylor多项式的n->∞），这是一个幂级数</p>
+		<script src="/javascript/overall.js"></script>
+	</body>
+</html>
