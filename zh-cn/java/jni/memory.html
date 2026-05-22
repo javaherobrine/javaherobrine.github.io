@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="../../../css/prism.css" />
+		<script src="../../../javascript/prism.js"></script>
+		<title>原始内存操作和Java对象模型</title>
+	</head>
+	<body>
+		<section>
+			<h3>内存管理</h3>
+			<p>我们先来回顾一下内存管理的基本原则</p>
+			<ul>
+				<li>内存在被写之前必须先被分配，在读之前必须被写，第一次写操作称为初始化</li>
+				<li>内存在不需要使用的时候必须释放</li>
+				<li>释放后的内存不能被再次释放和使用</li>
+			</ul>
+			<p>这些是我们在C/C++中常见的方式，但是在Java中，我们貌似很少关注这些问题，因为GC已经帮你兜底了。但是当Java代码进入JNI后，Java就再也不能帮你兜底了。有一个简单的实验，我把步骤贴出来了：</p>
+			<ol>
+				<li>在<code>Demo.java</code>中写上下列代码：
+<pre class="line-numbers"><code class="language-java">public class Demo{
+	private static native void malloc1MB();
+	private static native void sigsegv();
+	public static void main(String[] args) throws Exception{
+		System.load(args[0]);//Pass the absolute path of the library in the first parameter
+		IO.readln("Please keep monitoring memory usage while testing. Input a random string to start");
+		for(int i=0;i<1024;++i){
+			malloc1MB();
+		}
+		System.gc();
+		IO.readln("I allocated 1GB memory without releasing but with GC forced. But does the memory usage drop? Input a random string to continue");
+		sigsegv();
+		System.out.println("You won't see this");
+	}
+}</code></pre>
+				</li>
+				<li>在<code>Demo.cpp</code>中编写下列代码：<pre class="line-numbers"><code class="language-cpp">#include"Demo.h"
+#include&lt;stdlib.h&gt;
+#include&lt;stdio.h&gt;
+JNIEXPORT void JNICALL Java__malloc1MB(JNIEnv*,jclass){
+	malloc(1<<20);
+}
+JNIEXPORT void JNICALL Java_sigsegv(JNIEnv*,jclass){
+	int* ptr=0;
+	ptr[0]=1;
+	printf("You won't see this\n");
+}
+</code></pre>
+				</li>
+				<li>执行命令<code>javac Demo.cpp -h .</code>，并将生成的Demo.h和Demo.cpp放在一起编译，编译目标是动态链接库</li>
+				<li>执行命令<code>java Demo [path]</code>，其中<code>[path]</code>是生成的动态链接库的<strong>绝对路径</strong></li>
+			</ol>
+			<p>你应该会看到内存没有被GC回收，而下一个操作居然直接把JVM炸掉了！在Java里面，这个地方1GB的内存应该会被回收，而且JVM不会炸掉，只会出现一个<code class="language-java">java.lang.NullPointerException</code>，如果没炸掉，说明你做错了</p>
+			<p>这将是我们的实验的常态，不把JVM送上天几次，你是不会知道运行时边界有哪些地方需要注意的</p>
+			<hr />
+			<p>注意到，不论是<code class="language-cpp">malloc</code>还是<code class="language-cpp">new</code>，C/C++给你的其实都是指针。在上一节中，我们讲到了<code class="language-cpp">NewDirectByteBuffer</code>可以把原始指针包装成<code class="language-java">ByteBuferr</code>传递给Java</p>
+			<p>实际上，这个<code class="language-java">ByteBuferr</code>是<code class="language-java">DirectByteBuffer</code>，让我们看一眼<code class="language-java">ByteBuffer</code>的声明</p>
+			<pre class="line-numbers"><code class="language-java">public abstract sealed class ByteBuffer
+    extends Buffer
+    implements Comparable<ByteBuffer>
+    permits
+
+    HeapByteBuffer, MappedByteBuffer</code></pre>
+    			<p>再打开<code class="language-java">MappedByteBuffer</code>的声明</p>
+    			<pre class="line-numbers"><code class="language-java">public abstract sealed class MappedByteBuffer
+    extends ByteBuffer
+    permits DirectByteBuffer</code></pre>
+    			<p>不难发现，<code class="language-java">ByteBuffer</code>分为<code class="language-java">HeapByteBuffer</code>，<code class="language-java">MappedByteBuffer</code>和<code class="language-java">DirectByteBuffer</code>，第一个是我们正常分配的<code class="language-java">ByteBuffer</code>，
+    			第二个是我们用<code class="language-java">FileChannel::map</code>来构造的，而第三个是用<code class="language-java">allocateDirect</code>分配的，或者是从JNI直接返回的</p>
+    			<p>我们知道，<code class="language-java">DirectByteBuffer</code>是比<code class="language-java">HeapByteBuffer</code>要更快的，这是为什么呢？让我们继续深入运行时环境，查看I/O相关的源码，以<code class="language-java">sun.nio.ch.SocketChannelImpl</code>为例
+    			<i>思考：为什么不是<code class="language-java">java.nio.SocketChannel</code>?</i></p>
+    			<p>节选其中一段：</p>
+    			<pre class="line-numbers"><code class="language-java">    private long implWrite(ByteBuffer[] srcs, int offset, int length)
+        throws IOException
+    {
+        Objects.checkFromIndexSize(offset, length, srcs.length);
+
+        writeLock.lock();
+        try {
+            ensureOpenAndConnected();
+            boolean blocking = isBlocking();
+            long n = 0;
+            try {
+                beginWrite(blocking);
+                configureSocketNonBlockingIfVirtualThread();
+                n = IOUtil.write(fd, srcs, offset, length, nd);
+                if (blocking) {
+                    while (IOStatus.okayToRetry(n) && isOpen()) {
+                        park(Net.POLLOUT);
+                        n = IOUtil.write(fd, srcs, offset, length, nd);
+                    }
+                }
+            } finally {
+                endWrite(blocking, n > 0);
+                if (n <= 0 && isOutputClosed)
+                    throw new AsynchronousCloseException();
+            }
+            return IOStatus.normalize(n);
+        } finally {
+            writeLock.unlock();
+        }
+    }</code></pre>
+    			<p>注意到第18行的<code class="language-java">n = IOUtil.write(fd, srcs, offset, length, nd);</code>，这个地方藏了真正的I/O的实现，我们要好奇，所以继续打开来看看：</p>
+    			<pre class="line-numbers"><code class="language-java">    static long write(FileDescriptor fd, ByteBuffer[] bufs, int offset, int length,
+                      boolean direct, int alignment, NativeDispatcher nd)
+        throws IOException
+    {
+        return write(fd, bufs, offset, length, direct, false, alignment, nd);
+    }
+
+    static long write(FileDescriptor fd, ByteBuffer[] bufs, int offset, int length,
+                      boolean directIO, boolean async,
+                      int alignment, NativeDispatcher nd)
+        throws IOException
+    {
+        IOVecWrapper vec = IOVecWrapper.get(length);
+
+        boolean completed = false;
+        int iov_len = 0;
+        Runnable handleReleasers = null;
+        try {
+            // Iterate over buffers to populate native iovec array.
+            long writevLen = 0L;
+            int count = offset + length;
+            int i = offset;
+            while (i &lt; count && iov_len &lt; IOV_MAX && writevLen &lt; WRITEV_MAX) {
+                ByteBuffer buf = bufs[i];
+                acquireScope(buf, async);
+                if (NIO_ACCESS.hasSession(buf)) {
+                    handleReleasers = LinkedRunnable.of(Releaser.of(buf), handleReleasers);
+                }
+                int pos = buf.position();
+                int lim = buf.limit();
+                assert (pos &lt;= lim);
+                int rem = (pos &lt;= lim ? lim - pos : 0);
+                if (directIO)
+                    Util.checkRemainingBufferSizeAligned(rem, alignment);
+
+                if (rem &gt; 0) {
+                    long headroom = WRITEV_MAX - writevLen;
+                    if (headroom &lt; rem)
+                        rem = (int)headroom;
+
+                    vec.setBuffer(iov_len, buf, pos, rem);
+
+                    // allocate shadow buffer to ensure I/O is done with direct buffer
+                    if (!(buf instanceof DirectBuffer)) {
+                        ByteBuffer shadow;
+                        if (directIO)
+                            shadow = Util.getTemporaryAlignedDirectBuffer(rem, alignment);
+                        else
+                            shadow = Util.getTemporaryDirectBuffer(rem);
+                        shadow.put(shadow.position(), buf, pos, rem);
+                        shadow.flip();
+                        vec.setShadow(iov_len, shadow);
+                        buf = shadow;
+                        pos = shadow.position();
+                    }
+
+                    vec.putBase(iov_len, bufferAddress(buf) + pos);
+                    vec.putLen(iov_len, rem);
+                    iov_len++;
+                    writevLen += rem;
+                }
+                i++;
+            }
+            if (iov_len == 0)
+                return 0L;
+
+            long bytesWritten = nd.writev(fd, vec.address, iov_len);
+
+            // Notify the buffers how many bytes were taken
+            long left = bytesWritten;
+            for (int j=0; j&lt;iov_len; j++) {
+                if (left &gt; 0) {
+                    ByteBuffer buf = vec.getBuffer(j);
+                    int pos = vec.getPosition(j);
+                    int rem = vec.getRemaining(j);
+                    int n = (left &gt; rem) ? rem : (int)left;
+                    buf.position(pos + n);
+                    left -= n;
+                }
+                // return shadow buffers to buffer pool
+                ByteBuffer shadow = vec.getShadow(j);
+                if (shadow != null)
+                    Util.offerLastTemporaryDirectBuffer(shadow);
+                vec.clearRefs(j);
+            }
+
+            completed = true;
+            return bytesWritten;
+
+        } finally {
+            releaseScopes(handleReleasers);
+            // if an error occurred then clear refs to buffers and return any shadow
+            // buffers to cache
+            if (!completed) {
+                for (int j=0; j&lt;iov_len; j++) {
+                    ByteBuffer shadow = vec.getShadow(j);
+                    if (shadow != null)
+                        Util.offerLastTemporaryDirectBuffer(shadow);
+                    vec.clearRefs(j);
+                }
+            }
+            vec.release();
+        }
+    }</code></pre>
+    			<p>注意第43行的注释，原来其他类型的<code class="language-java">ByteBuffer</code>会先转换成<code class="language-java">DirectBuffer</code>，存在一次拷贝！这是影响性能的因素！</p>
+    			<p>所以事实上，使用 <code class="language-java">DirectBuffer</code>可以减少一次拷贝。关于零拷贝的内容，我们将在后续章节进行进一步的讨论</p>
+    			<p>最后一个问题是，<code class="language-java">HeapByteBuffer</code>的底层使用<code class="language-java">byte[]</code><i>任务：自行查看代码</i>，为什么就必须要拷贝一次？这个问题就引出了后面的话题：Java对象模型</p>
+		</section>
+	</body>
+</html>

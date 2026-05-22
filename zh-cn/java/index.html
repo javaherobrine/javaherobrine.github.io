@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>关于这个教程</title>
+	</head>
+	<body>
+		<h3>这是一个Java教程，但是不是传统意义的Java教程，在这里你学不到</h3>
+		<ul>
+			<li>如何更好的玩转设计模式（可能会体现一些设计模式，但是我极度讨厌过度设计）</li>
+			<li>如何更快速的编写CRUD（实际上这个教程完全帮不到你这些）</li>
+			<li>Spring等常见框架（Java不该被它们绑定！）</li>
+		</ul>
+		<p>这个教程，或者说，其实更像是博客，讲述的是一个计算机爱好者从Java到底层的完整历程，是我如何一步一步的掰开Java的抽象层的过程</p>
+		<p>你将学到的东西如下：</p>
+		<ul>
+			<li>Java的新语法和一些设计哲学（我默认你使用Java 25而不是Java 8，Java 8真的很难用）</li>
+			<li>如何用各种手段在Runtime Boundary附近反复横跳，最终把JVM搞炸，以及这意味着什么（如果我上面的实验你跟着做，你没看到hs_error文件，基本上说明你做错了）</li>
+			<li>如何一步一步的掰开Java的抽象层，这些抽象在背后的道理，以及这些抽象在其他语言的体现（你会发现操作系统的相当多的概念，Java已经教过你了）</li>
+		</ul>
+		<strong>请确保你的网络畅通，你需要经常阅读JEP和OpenJDK的Projects（我会告诉你在哪的）</strong>
+		<hr />
+		<h3>目录：</h3>
+		<ol>
+			<li><p>从JNI和FFM开始</p>
+				<ol>
+					<li>JNI和Java Invocation API基础知识回顾</li>
+					<li><a href="jni/memory.html">原始内存操作和Java对象模型</a></li>
+					<li>跳出Java函数调用栈</li>
+					<li>令人愤怒但是相当合理的JEP 472</li>
+				</ol>
+			</li>
+			<li><p>提到Java永远绕不开的并发</p>
+				<ol>
+					<li>NIO和多线程基础知识回顾</li>
+					<li>糟糕，被synchronized锁住了！</li>
+					<li>守护数据的volatile和原子操作</li>
+					<li>只需要一个线程的Selector</li>
+					<li>状态机和异步</li>
+				</ol>
+			</li>
+			<li><p>方便的代价是什么？</p>
+				<ol>
+					<li>最有效的GC优化是少产生垃圾</li>
+					<li>探秘JNI临界区和JEP 423</li>
+					<li>运行时反射背后的逻辑和JEP 403</li>
+				</ol>
+			</li>
+			<li><p>未分类</p>
+				<ol>
+					<li>为什么要去窥探内部实现以及窥探示例</li>
+					<li>没有最好的抽象</li>
+					<li>Project Valhalla的诱惑和难产原因</li>
+					<li>魔法类Unsafe的原理和JEP 471</li>
+					<li>独立依赖 or 全局Runtime？</li>
+				</ol>
+			</li>
+		</ol>
+		<hr />
+		<h3>关于作者</h3>
+		<p>我是Java_Herobrine，正如其名，我像是一只在JVM里面游荡的幽灵（Herobrine是Minecraft的一个都市传说），目前就读于USTC物理专业。我并不是很擅长你们擅长的CRUD，但是我想带你们看看JVM内部的那些事情</p>
+		<p>如果有任何问题或者想要完善这些教程，欢迎发送电子邮件到<a href="mailto:javaherobrine@qq.com">javaherobrine@qq.com</a></p>
+	</body>
+</html>
